@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 package com.example
-// Serializable -> Serializable is a Java marker interface that tells Jenkins: “This object can be safely saved and restored when a pipeline is paused or restarted.”
+// Serializable -> Serializable is a Java marker interface that tells Jenkins: "This object can be safely saved and restored when a pipeline is paused or restarted."
 class Docker implements Serializable {
     def script
 
