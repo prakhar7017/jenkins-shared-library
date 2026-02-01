@@ -34,9 +34,9 @@ class Docker implements Serializable {
             script.sh 'git branch'
             script.sh 'git config --list'
 
-            // URL-encode credentials to handle special characters like @ in password
+            // URL-encode special characters in password
             script.sh '''
-                ENCODED_PASSWORD=$(echo -n "$PASSWORD" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read(), safe=''))")
+                ENCODED_PASSWORD=$(printf '%s' "$PASSWORD" | sed 's/@/%40/g; s/:/%3A/g; s/\\//%2F/g; s/?/%3F/g; s/#/%23/g; s/&/%26/g; s/=/%3D/g')
                 git remote set-url origin "https://${USER}:${ENCODED_PASSWORD}@github.com/prakhar7017/java-maven-app.git"
             '''
             
