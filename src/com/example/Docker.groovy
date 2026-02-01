@@ -25,24 +25,24 @@ class Docker implements Serializable {
     }
 
    def commitVersion() {
-        script.withCredentials([script.usernamePassword(credentialsId: "github-cred", usernameVariable: "USER", passwordVariable: "PASSWORD")]) {
-            
-            script.sh 'git config --global user.email "jenkins@example.com"'
-            script.sh 'git config --global user.name "jenkins"'
+    script.withCredentials([
+        script.string(credentialsId: 'Github-Token', variable: 'GITHUB_TOKEN')
+    ]) {
 
-            script.sh 'git status'
-            script.sh 'git branch'
-            script.sh 'git config --list'
+        script.sh '''
+            git config --global user.email "jenkins@example.com"
+            git config --global user.name "jenkins"
 
-            // URL-encode special characters in password
-            script.sh '''
-                ENCODED_PASSWORD=$(printf '%s' "$PASSWORD" | sed 's/@/%40/g; s/:/%3A/g; s/\\//%2F/g; s/?/%3F/g; s/#/%23/g; s/&/%26/g; s/=/%3D/g')
-                git remote set-url origin "https://${USER}:${ENCODED_PASSWORD}@github.com/prakhar7017/java-maven-app.git"
-            '''
-            
-            script.sh 'git add .'
-            script.sh 'git commit -m "ci:version bump"'
-            script.sh 'git push origin HEAD:jenkins-jobs'
-        }
+            git status
+            git branch
+            git config --list
+
+            git add .
+            git commit -m "ci:version bump" || echo "Nothing to commit"
+
+            git push https://prakhar7017:${GITHUB_TOKEN}@github.com/prakhar7017/java-maven-app.git HEAD:jenkins-jobs
+        '''
     }
+}
+
 }
