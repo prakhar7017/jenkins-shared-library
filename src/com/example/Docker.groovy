@@ -27,14 +27,18 @@ class Docker implements Serializable {
    def commitVersion() {
         script.withCredentials([script.usernamePassword(credentialsId: "github-cred", usernameVariable: "USER", passwordVariable: "PASSWORD")]) {
             
-            script.sh 'git config -- user.email "jenkins@example.com"'
-            script.sh 'git config -- user.name "jenkins"'
+            script.sh 'git config --global user.email "jenkins@example.com"'
+            script.sh 'git config --global user.name "jenkins"'
 
             script.sh 'git status'
             script.sh 'git branch'
             script.sh 'git config --list'
 
-            script.sh 'git remote set-url origin https://$USER:$PASSWORD@github.com/prakhar7017/java-maven-app.git'
+            // URL-encode credentials to handle special characters like @ in password
+            script.sh '''
+                ENCODED_PASSWORD=$(echo -n "$PASSWORD" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read(), safe=''))")
+                git remote set-url origin "https://${USER}:${ENCODED_PASSWORD}@github.com/prakhar7017/java-maven-app.git"
+            '''
             
             script.sh 'git add .'
             script.sh 'git commit -m "ci:version bump"'
