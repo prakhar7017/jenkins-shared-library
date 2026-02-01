@@ -40,7 +40,8 @@ class Docker implements Serializable {
             git add .
             git commit -m "ci:version bump" || echo "Nothing to commit"
 
-            git push https://prakhar7017:${GITHUB_TOKEN}@github.com/prakhar7017/java-maven-app.git HEAD:jenkins-jobs
+            git push https://prakhar7017:${GITHUB_TOKEN}@github.com/prakhar7017/java-maven-app.git \
+                HEAD:refs/heads/jenkins-jobs
         '''
     }
 }
